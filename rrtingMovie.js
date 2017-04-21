@@ -3,14 +3,15 @@ var charset = require('superagent-charset');
 var cheerio = require('cheerio');
 var fs = require('fs');
 
-var baseUrl = 'http://www.rrting.net/English/movie_mp3/';
-var movieId = '3322';
-var downloadPath = '/Users/liuyiqi/Downloads/风雨哈佛路/';
+var baseUrl = 'http://www.rrting.net/English/';
+var urlSuffix = 'movie_mp3/3738/';
+var downloadPath = '/Users/liuyiqi/Downloads/';
+var replaceReg = /(听电影(MP3)?学英语之)|(\s?中英双语MP3\+LRC(\+文本)?)/g;
 
 charset(request);
 
 function getIdsAndTitles(cb) {
-    request.get(baseUrl + movieId)
+    request.get(baseUrl + urlSuffix)
         .charset('gb2312')
         .end(function (err, res) {
             if (err) {
@@ -22,15 +23,18 @@ function getIdsAndTitles(cb) {
             $("#tab li").each(function (idx, element) {
                 var $a = $(element).children().last();
                 parts.push({
-                    id: $a.attr('href').split('/')[3],
-                    title: $a.attr('title').split(' ')[0].split('之')[1]
+                    id: $a.attr('href').split('English/')[1],
+                    title: $a.attr('title').replace(replaceReg,'')
                 });
             });
+            downloadPath += parts[0].title.slice(0, -2) + '/';
+
             if (cb) {
+                console.log('getIdsAndTitles is complete!');
                 cb(parts.sort(function (a, b) {
-                    if (a.id > b.id) {
+                    if (a.title > b.title) {
                         return 1;
-                    } else if (a.id < b.id) {
+                    } else if (a.title < b.title) {
                         return -1;
                     } else {
                         return 0;
@@ -59,6 +63,7 @@ function getMp3AndLrcUrls(cb) {
                     parts[index]['texturl'] = texturl;
 
                     if (numbers === parts.length && cb) {
+                        console.log('getMp3AndLrcUrls is complete!');
                         cb(parts);
                     }
                 })
@@ -77,10 +82,12 @@ function download(url, localPath) {
 }
 
 function startDownload() {
-    if(!fs.existsSync(downloadPath)){
-        fs.mkdirSync(downloadPath)
-    }
     getMp3AndLrcUrls(function (parts) {
+
+        if (!fs.existsSync(downloadPath)) {
+            fs.mkdirSync(downloadPath)
+        }
+
         parts.forEach(function (partData, index) {
             // console.log(partData.mp3url);
             download(partData.mp3url, downloadPath + partData.title + '.mp3');
