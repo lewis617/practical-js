@@ -1,0 +1,23 @@
+{
+  "name": "practical-node",
+  "version": "1.0.0",
+  "description": "Practical Node Script",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lewis617/practical-node.git"
+  },
+  "author": "lewis617",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lewis617/practical-node/issues"
+  },
+  "homepage": "https://github.com/lewis617/practical-node#readme",
+  "dependencies": {
+    "cheerio": "^0.22.0",
+    "superagent": "^3.5.2",
+    "superagent-charset": "^1.1.1"
+  }
+}
