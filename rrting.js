@@ -2,11 +2,14 @@ var request = require('superagent');
 var charset = require('superagent-charset');
 var cheerio = require('cheerio');
 var fs = require('fs');
+var os = require('os');
+var path = require('path');
 
 var baseUrl = 'http://www.rrting.net/English/';
-var urlSuffix = 'movie_mp3/3738/';
-var downloadPath = '/Users/liuyiqi/Downloads/';
-var replaceReg = /(听电影(MP3)?学英语之)|(\s?中英双语MP3\+LRC(\+文本)?)/g;
+var urlSuffix = 'oral/101025/';
+var downloadPath = path.join(os.homedir(), 'Downloads');
+var titleReplaceReg = /(听电影(MP3)?学英语之)|(\s?中英双语MP3\+LRC(\+文本)?)/g;
+var dirReplaceReg = /([0-9][0-9]$)|(\s?第[0-9][0-9]?课$)/g;
 
 charset(request);
 
@@ -20,14 +23,25 @@ function getIdsAndTitles(cb) {
             var $ = cheerio.load(res.text);
             var parts = [];
 
-            $("#tab li").each(function (idx, element) {
-                var $a = $(element).children().last();
-                parts.push({
-                    id: $a.attr('href').split('English/')[1],
-                    title: $a.attr('title').replace(replaceReg,'')
+            // li 下载页面
+            if ($("#tab").length > 0) {
+                $("#tab li").each(function (id, element) {
+                    var $a = $(element).children().last();
+                    parts.push({
+                        id: $a.attr('href').replace(baseUrl, ''),
+                        title: $a.text().replace(titleReplaceReg, '')
+                    });
                 });
-            });
-            downloadPath += parts[0].title.slice(0, -2) + '/';
+            } else { // table 下载页面
+                $("table a").each(function (id, element) {
+                    var $a = $(element);
+                    parts.push({
+                        id: $a.attr('href').replace(baseUrl, ''),
+                        title: $a.text().replace(titleReplaceReg, '')
+                    });
+                });
+            }
+            downloadPath = path.join(downloadPath, parts[0].title.replace(dirReplaceReg, ''));
 
             if (cb) {
                 console.log('getIdsAndTitles is complete!');
@@ -90,8 +104,8 @@ function startDownload() {
 
         parts.forEach(function (partData, index) {
             // console.log(partData.mp3url);
-            download(partData.mp3url, downloadPath + partData.title + '.mp3');
-            download(partData.texturl, downloadPath + partData.title + '.lrc');
+            download(partData.mp3url, path.join(downloadPath, partData.title + '.mp3'));
+            download(partData.texturl, path.join(downloadPath, partData.title + '.lrc'));
         });
     })
 }
