@@ -5,16 +5,15 @@ var fs = require('fs');
 var os = require('os');
 var path = require('path');
 
-var baseUrl = 'http://www.rrting.net/English/';
-var urlSuffix = 'oral/101025/';
+var mainOrigin = 'http://www.rrting.net';
+var mainPathname = '/English/practical/110629/';
 var downloadPath = path.join(os.homedir(), 'Downloads');
 var titleReplaceReg = /(听电影(MP3)?学英语之)|(\s?中英双语MP3\+LRC(\+文本)?)/g;
-var dirReplaceReg = /([0-9][0-9]$)|(\s?第[0-9][0-9]?课$)/g;
 
 charset(request);
 
-function getIdsAndTitles(cb) {
-    request.get(baseUrl + urlSuffix)
+function getPathnameAndTitles(cb) {
+    request.get(mainOrigin + mainPathname)
         .charset('gb2312')
         .end(function (err, res) {
             if (err) {
@@ -22,29 +21,29 @@ function getIdsAndTitles(cb) {
             }
             var $ = cheerio.load(res.text);
             var parts = [];
+            var pushTo$a = function ($a) {
+                parts.push({
+                    pathname: $a.attr('href').replace(mainOrigin, ''),
+                    title: $a.text().replace(titleReplaceReg, '')
+                });
+            };
 
             // li 下载页面
             if ($("#tab").length > 0) {
                 $("#tab li").each(function (id, element) {
                     var $a = $(element).children().last();
-                    parts.push({
-                        id: $a.attr('href').replace(baseUrl, ''),
-                        title: $a.text().replace(titleReplaceReg, '')
-                    });
+                    pushTo$a($a);
                 });
             } else { // table 下载页面
                 $("table a").each(function (id, element) {
                     var $a = $(element);
-                    parts.push({
-                        id: $a.attr('href').replace(baseUrl, ''),
-                        title: $a.text().replace(titleReplaceReg, '')
-                    });
+                    pushTo$a($a);
                 });
             }
-            downloadPath = path.join(downloadPath, parts[0].title.replace(dirReplaceReg, ''));
+            downloadPath = path.join(downloadPath, $("#N_title h1").text());
 
             if (cb) {
-                console.log('getIdsAndTitles is complete!');
+                console.log('getPathnameAndTitles is complete!');
                 cb(parts.sort(function (a, b) {
                     if (a.title > b.title) {
                         return 1;
@@ -59,10 +58,10 @@ function getIdsAndTitles(cb) {
 }
 
 function getMp3AndLrcUrls(cb) {
-    getIdsAndTitles(function (parts) {
+    getPathnameAndTitles(function (parts) {
         var numbers = 0;
         parts.forEach(function (partData, index) {
-            request.get(baseUrl + partData.id + '/mp3para.js')
+            request.get(mainOrigin + partData.pathname + 'mp3para.js')
                 .buffer(true)
                 .end(function (err, res) {
                     if (err) {
@@ -71,10 +70,15 @@ function getMp3AndLrcUrls(cb) {
 
                     numbers++;
 
-                    eval(res.text);
+                    try {
+                        eval(res.text);
 
-                    parts[index]['mp3url'] = mp3url;
-                    parts[index]['texturl'] = texturl;
+                        parts[index]['mp3url'] = mp3url;
+                        parts[index]['texturl'] = texturl;
+                        parts[index]['wordurl'] = mainOrigin + wordurl;
+                    } catch (err) {
+                        console.error(partData.title + ' is error: ', err);
+                    }
 
                     if (numbers === parts.length && cb) {
                         console.log('getMp3AndLrcUrls is complete!');
@@ -102,10 +106,17 @@ function startDownload() {
             fs.mkdirSync(downloadPath)
         }
 
-        parts.forEach(function (partData, index) {
+        parts.forEach(function (partData) {
             // console.log(partData.mp3url);
-            download(partData.mp3url, path.join(downloadPath, partData.title + '.mp3'));
-            download(partData.texturl, path.join(downloadPath, partData.title + '.lrc'));
+            if ('mp3url' in partData) {
+                download(partData.mp3url, path.join(downloadPath, partData.title + '.mp3'));
+            }
+            if ('wordurl' in partData) {
+                download(partData.wordurl, path.join(downloadPath, partData.title + '.txt'));
+            }
+            if ('texturl' in partData && partData.texturl.slice(-11) !== 'default.lrc') {
+                download(partData.texturl, path.join(downloadPath, partData.title + '.lrc'));
+            }
         });
     })
 }
