@@ -6,9 +6,9 @@ var os = require('os');
 var path = require('path');
 
 var mainOrigin = 'http://www.rrting.net';
-var mainPathname = '/English/practical/110629/';
+var mainPathname = '/English/oral/101167/';
 var downloadPath = path.join(os.homedir(), 'Downloads');
-var titleReplaceReg = /(听电影(MP3)?学英语之)|(\s?中英双语MP3\+LRC(\+文本)?)/g;
+var titleReplaceReg = /(听电影(MP3)?学英语之)|(\s?中英双语MP3\+LRC(\+文本)?)|(\s?$)/g;
 
 charset(request);
 
@@ -40,7 +40,7 @@ function getPathnameAndTitles(cb) {
                     pushTo$a($a);
                 });
             }
-            downloadPath = path.join(downloadPath, $("#N_title h1").text());
+            downloadPath = path.join(downloadPath, $(".STYLE2").text());
 
             if (cb) {
                 console.log('getPathnameAndTitles is complete!');
