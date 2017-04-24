@@ -95,8 +95,7 @@ function download(url, localPath) {
     stream.on('finish', function () {
         console.log('The download of ' + localPath + ' is complete!');
     });
-    var req = request.get(url);
-    req.pipe(stream);
+    request.get(url).pipe(stream);
 }
 
 function startDownload() {
