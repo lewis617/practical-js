@@ -13,9 +13,8 @@ function srtBlockToLrc(block) {
 
     var array = srtBlockReg.exec(block);
     var timeStart = array[2].slice(3, -1).replace(',', '.'),
-        timeEnd = array[3].slice(3, -1).replace(',', '.'),
         content = array[4].replace('\n', ' ');
-    return '[' + timeStart + ']' + content + '\n' + '[' + timeEnd + ']\n';
+    return '[' + timeStart + ']' + content + '\n';
 }
 
 function srtFileToLrc(filePath) {
