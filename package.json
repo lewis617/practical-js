@@ -17,6 +17,7 @@
   "homepage": "https://github.com/lewis617/practical-node#readme",
   "dependencies": {
     "cheerio": "^0.22.0",
+    "glob": "^7.1.1",
     "superagent": "^3.5.2",
     "superagent-charset": "^1.1.1"
   }
