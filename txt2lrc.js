@@ -19,7 +19,7 @@ function txtFileToLrc(filePath) {
     var arrayOut = strIn
         .split(/[\u4e00-\u9fa5]/)[0]
         .replace(/[\r\n]/g, '')
-        .replace('’', '\'')
+        .replace(/’/g, '\'')
         .split(/A:|B:/);
     var strOut = arrayOut.reduce(function (last, current, index) {
         var addStr = '';
