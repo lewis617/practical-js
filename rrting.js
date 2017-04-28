@@ -6,7 +6,7 @@ var os = require('os');
 var path = require('path');
 
 var mainOrigin = 'http://www.rrting.net';
-var mainPathname = '/English/oral/101167/';
+var mainPathname = '/English/oral/271847/';
 var downloadPath = path.join(os.homedir(), 'Downloads');
 var titleReplaceReg = /(听电影(MP3)?学英语之)|(\s?中英双语MP3\+LRC(\+文本)?)|(\s?$)/g;
 
@@ -23,7 +23,7 @@ function getPathnameAndTitles(cb) {
             var parts = [];
             var pushTo$a = function ($a) {
                 parts.push({
-                    pathname: $a.attr('href').replace(mainOrigin, ''),
+                    pathname: $a.attr('href').replace(/(^http:\/\/www.rrting.net)|(\/$)/g, ''),
                     title: $a.text().replace(titleReplaceReg, '')
                 });
             };
@@ -61,7 +61,8 @@ function getMp3AndLrcUrls(cb) {
     getPathnameAndTitles(function (parts) {
         var numbers = 0;
         parts.forEach(function (partData, index) {
-            request.get(mainOrigin + partData.pathname + 'mp3para.js')
+            var mp3ParaUrl = mainOrigin + partData.pathname + '/mp3para.js';
+            request.get(mp3ParaUrl)
                 .buffer(true)
                 .end(function (err, res) {
                     if (err) {
@@ -77,7 +78,7 @@ function getMp3AndLrcUrls(cb) {
                         parts[index]['texturl'] = texturl;
                         parts[index]['wordurl'] = mainOrigin + wordurl;
                     } catch (err) {
-                        console.error(partData.title + ' is error: ', err);
+                        console.error(mp3ParaUrl + ' is error: ', err);
                     }
 
                     if (numbers === parts.length && cb) {
