@@ -18,6 +18,7 @@
   "dependencies": {
     "cheerio": "^0.22.0",
     "glob": "^7.1.1",
+    "iconv": "^2.2.3",
     "superagent": "^3.5.2",
     "superagent-charset": "^1.1.1"
   }
