@@ -16,23 +16,39 @@ function readFileSync_encoding(filename, encoding) {
 
 function txtFileToLrc(filePath) {
     var strIn = readFileSync_encoding(filePath, 'gb18030');
-    var arrayOut = strIn
-        .split(/[\u4e00-\u9fa5]/)[0]
-        .replace(/[\r\n]/g, '')
-        .replace(/’/g, '\'')
-        .split(/A:|B:/);
+
+    try {
+        // var arrayOut = strIn
+        //     .split(/A:|I:|R:|B:/)
+        //     .filter(function (item) {
+        //         return item && !/[\u4e00-\u9fa5]/.test(item)
+        //     });
+
+        var arrayOut = strIn
+            .split(/[\u4e00-\u9fa5]/)[0]
+            .replace(/[\r\n]/g, '')
+            .replace(/’/g, '\'')
+            .split(/A:|B:/)
+            .slice(1);
+    } catch (err) {
+        console.log(err, filePath);
+    }
+
+    var lastSec = 0.00;
+
     var strOut = arrayOut.reduce(function (last, current, index) {
-        var addStr = '';
-        if (index === 0) {
-            addStr = '[00:00.00]';
-        } else if (index === 1) {
-            addStr = '\tA:';
-        } else if (index % 2 === 0) {
-            addStr = '\r\n[00:0' + index + '.00]B:'
-        } else if (index & 1 === 1) {
-            addStr = '\r\n[00:0' + index + '.00]A:'
-        }
-        return last + addStr + current;
+        var currentSec = lastSec + (current.length / 15).toFixed(2) * 1;
+
+        var sec = (lastSec % 60).toFixed(2);
+        var min = Math.floor(lastSec / 60);
+        var numFormate = function (num) {
+            return num >= 10 ? num : ('0' + num);
+        };
+
+        lastSec = currentSec;
+        var minSec = '[' + numFormate(min) + ':' + numFormate(sec) + ']';
+        var addStr = (index > 0 ? '\r\n' : '') + minSec + (index % 2 === 0 ? 'A:' : 'B:');
+        return last + addStr + current.replace(/？/g, '?').replace(/，/g, ',');
     }, '');
 
     var lrcPath = filePath.replace('.txt', '.lrc');
