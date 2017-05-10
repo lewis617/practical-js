@@ -2,6 +2,10 @@
 # yarn lockfile v1
 
 
+asap@~1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/asap/-/asap-1.0.0.tgz#b2a45da5fdfa20b0496fc3768cc27c12fa916a7d"
+
 asynckit@^0.4.0:
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/asynckit/-/asynckit-0.4.0.tgz#c79ed97f7f34cb8f2ba1bc9790bcc366474b4b79"
@@ -262,6 +266,13 @@ minimatch@^3.0.2:
   dependencies:
     brace-expansion "^1.0.0"
 
+mp3-duration@^1.0.10:
+  version "1.0.10"
+  resolved "https://registry.yarnpkg.com/mp3-duration/-/mp3-duration-1.0.10.tgz#ccdd0c1c2db940952d1d58a9222585b169b4e027"
+  dependencies:
+    promisify "0.0.3"
+    suspend "^0.7.0"
+
 ms@0.7.3:
   version "0.7.3"
   resolved "https://registry.yarnpkg.com/ms/-/ms-0.7.3.tgz#708155a5e44e33f5fd0fc53e81d0d40a91be1fff"
@@ -289,6 +300,18 @@ path-is-absolute@^1.0.0:
 process-nextick-args@~1.0.6:
   version "1.0.7"
   resolved "https://registry.yarnpkg.com/process-nextick-args/-/process-nextick-args-1.0.7.tgz#150e20b756590ad3f91093f25a4f2ad8bff30ba3"
+
+promise@^6.0.0:
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/promise/-/promise-6.1.0.tgz#2ce729f6b94b45c26891ad0602c5c90e04c6eef6"
+  dependencies:
+    asap "~1.0.0"
+
+promisify@0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/promisify/-/promisify-0.0.3.tgz#754db61f29ee6476ab543c45b464d21f5ef55686"
+  dependencies:
+    when ""
 
 qs@^6.1.0:
   version "6.4.0"
@@ -333,9 +356,19 @@ superagent@^3.5.2:
     qs "^6.1.0"
     readable-stream "^2.0.5"
 
+suspend@^0.7.0:
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/suspend/-/suspend-0.7.0.tgz#e54cdb4724f0dee56c4ba3f382d4d4994e555fa2"
+  dependencies:
+    promise "^6.0.0"
+
 util-deprecate@~1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/util-deprecate/-/util-deprecate-1.0.2.tgz#450d4dc9fa70de732762fbd2d4a28981419a0ccf"
+
+when@:
+  version "3.7.8"
+  resolved "https://registry.yarnpkg.com/when/-/when-3.7.8.tgz#c7130b6a7ea04693e842cdc9e7a1f2aa39a39f82"
 
 wrappy@1:
   version "1.0.2"
