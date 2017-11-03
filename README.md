@@ -10,4 +10,6 @@
 
 [批量重命名文件](https://github.com/lewis617/practical-node/blob/master/renameFiles.js)
 
-[批量转换 txt 文件为 lrc 文件(没有普适性)](https://github.com/lewis617/practical-node/blob/master/txt2lrc.js)
+[批量转换 txt 文件为 lrc 文件(没有普适性，只适合特定txt文件)](https://github.com/lewis617/practical-node/blob/master/txt2lrc.js)
+
+[列出目录下所有文件](https://github.com/lewis617/practical-node/blob/master/walk.js)
