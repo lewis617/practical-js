@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Practical Node Script",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -22,5 +22,8 @@
     "mp3-duration": "^1.0.10",
     "superagent": "^3.5.2",
     "superagent-charset": "^1.1.1"
+  },
+  "devDependencies": {
+    "jest": "^21.2.1"
   }
 }

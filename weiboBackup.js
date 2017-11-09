@@ -7,14 +7,19 @@
 var nodeArray = Array.from(document.querySelectorAll('.list_con .WB_text'));
 
 var textArray = nodeArray.map(function (node) {
-  return Array.from(node.childNodes).map(function(childNode){
+  return Array.from(node.childNodes).map(function (childNode) {
+    var value;
     // 文字的情况
-    if(childNode.nodeName==='#text') return childNode.nodeValue.replace(/(\s+$)|(^\s+)/g, '');
+    if (childNode.nodeName === '#text') value = childNode.nodeValue;
     // 图片表情的情况
-    else if(childNode.nodeName === 'IMG') return childNode.alt;
+    else if (childNode.nodeName === 'IMG') value = childNode.alt;
     // 链接的情况
-    else if(childNode.nodeName === 'A') return childNode.lastChild.nodeValue;
+    else if (childNode.nodeName === 'A') value = childNode.lastChild.nodeValue;
+    return value.replace(/(\s+$)|(^\s+)/g, '');
   }).join('');
 });
 
 console.log(textArray.join('\n'));
+
+// 本行代码用于单元测试，请不要拷贝到浏览器的console中运行
+module.exports = textArray;
