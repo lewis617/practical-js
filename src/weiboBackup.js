@@ -19,7 +19,7 @@ var textArray = nodeArray.map(function (node) {
   }).join('');
 });
 
-console.log(textArray.join('\n'));
+// console.log(textArray.join('\n'));
 
 // 本行代码用于单元测试，请不要拷贝到浏览器的console中运行
 module.exports = textArray;
