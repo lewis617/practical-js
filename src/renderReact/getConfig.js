@@ -4,10 +4,13 @@ const webpack = require('webpack');
 const autoprefixer = require('autoprefixer');
 const cwd = process.cwd();
 
+process.noDeprecation = true;
+
 module.exports = (port) => {
   function getDevEntry() {
     const entry = {};
     glob.sync('./rrc/*.+(js|jsx|)', { cwd }).forEach((item) => {
+      console.log(item);
       const file = item.replace(/.jsx?/, '');
       entry[file] = [
         `webpack-dev-server/client?http://0.0.0.0:${port}/`,
@@ -20,7 +23,7 @@ module.exports = (port) => {
   return {
     mode: 'development',
     context: cwd,
-    devtool: 'cheap-eval-source-map',
+    devtool: 'cheap-module-eval-source-map',
     entry: getDevEntry(),
     output: {
       filename: '[name].js',
@@ -33,7 +36,7 @@ module.exports = (port) => {
           use: {
             loader: 'babel-loader',
             options: {
-              presets: ['env', 'react']
+              presets: ['env', 'react', 'stage-0']
             }
           }
         },
